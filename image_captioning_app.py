@@ -1,38 +1,33 @@
-
 import gradio as gr
 import numpy as np
 from PIL import Image
 from transformers import AutoProcessor, BlipForConditionalGeneration
 
-# Load the pretrained processor and model
+# 加载预训练的处理器和模型
 processor = AutoProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
 model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-base")
 
 def caption_image(input_image: np.ndarray):
-    # Convert numpy array to PIL Image and convert to RGB
+    # 将numpy数组转换为PIL图像并转换为RGB
     raw_image = Image.fromarray(input_image).convert('RGB')
-    
-    # Process the image
-    text = "the image of"
-    inputs = processor(images=input_image, text=text, return_tensors="pt")    
 
-    # Generate a caption for the image
-    outputs = model.generate(**inputs, max_length=50)
+    # 处理图像
+    inputs = processor(raw_image, return_tensors="pt")
 
-    # Decode the generated tokens to text and store it into `caption`
-    caption = processor.decode(outputs[0], skip_special_tokens=True)
+    # 为图像生成标题
+    out = model.generate(**inputs,max_length=50)
+
+    # 解码生成的标记为文本
+    caption = processor.decode(out[0], skip_special_tokens=True)
 
     return caption
-
 
 iface = gr.Interface(
     fn=caption_image, 
     inputs=gr.Image(), 
     outputs="text",
-    title="Image Captioning",
-    description="This is a simple web app for generating captions for images using a trained model."
+    title="图像标题生成",
+    description="这是一个简单的网页应用，用于使用训练好的模型为图像生成标题。"
 )
 
 iface.launch()
-
-
