@@ -4,6 +4,8 @@ source my_env/bin/activate # activate my_env
 
 pip install langchain==0.1.11 gradio==5.23.2 transformers==4.38.2 bs4==0.0.2 requests==2.31.0 torch==2.2.1
 
+pip install gradio transformers Pillow
+
 source my_env/bin/activate # activate my_env
 
 python3 image_cap.py 
